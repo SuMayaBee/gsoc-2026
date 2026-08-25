@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sumaiya Islam's Google Summer of Code 2026 work on Panel Live Server for NumFOCUS (HoloViz).">
+  <meta name="theme-color" content="#071b3d">
+  <title>Making visual AI workflows more reliable | GSoC 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #071b3d;
+      --blue: #1262c8;
+      --sky: #6ab8ff;
+      --mint: #50e3b2;
+      --green: #0d9a73;
+      --ink: #10223f;
+      --muted: #5d6e87;
+      --paper: #f5f9ff;
+      --white: #ffffff;
+      --line: #d5e2f1;
+      --soft-blue: #e8f3ff;
+      --soft-mint: #e3fbf2;
+      --shadow: 0 20px 55px rgba(11, 55, 111, .12);
+      --mono: "DM Mono", ui-monospace, monospace;
+      --body: "Manrope", sans-serif;
+      --display: "Space Grotesk", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: var(--body); color: var(--ink); background: var(--paper); line-height: 1.65; }
+    a { color: inherit; text-underline-offset: .22em; }
+    a:hover { color: var(--blue); }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: auto; }
+
+    .topbar { position: sticky; top: 0; z-index: 10; background: rgba(245,249,255,.88); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(213,226,241,.8); }
+    .topbar .wrap { min-height: 62px; display: flex; align-items: center; gap: 22px; }
+    .brand { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+    .brand span { color: var(--green); }
+    nav { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 700; }
+    nav a:last-child { color: var(--navy); border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; }
+    @media (max-width: 650px) { nav a:not(:last-child) { display: none; } }
+
+    .hero { overflow: hidden; position: relative; color: white; background: radial-gradient(circle at 77% 20%, rgba(80,227,178,.27), transparent 19%), radial-gradient(circle at 12% 100%, rgba(18,98,200,.55), transparent 37%), linear-gradient(130deg, #06162f, #082c5e 54%, #0b3f63); padding: 72px 0 58px; }
+    .hero::after { content: ""; position: absolute; inset: 0; opacity: .14; background-image: linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, black, transparent); }
+    .hero .wrap { position: relative; z-index: 1; }
+    .eyebrow { margin: 0 0 22px; color: var(--mint); font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    h1 { max-width: 850px; margin: 0; font: 700 clamp(40px, 6.2vw, 78px)/1.02 var(--display); letter-spacing: -.05em; }
+    h1 em { color: var(--mint); font-style: normal; }
+    .hero-copy { max-width: 720px; color: #c7dcfa; font-size: clamp(17px, 2vw, 21px); margin: 25px 0 32px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 10px 24px; font: 13px var(--mono); color: #b8d0ee; }
+    .hero-meta b { color: white; font-weight: 500; }
+
+    .numbers { margin-top: -29px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: white; box-shadow: var(--shadow); }
+    .number { padding: 22px 24px; border-right: 1px solid var(--line); }
+    .number:last-child { border-right: 0; }
+    .number strong { display: block; font: 700 clamp(30px,4vw,48px)/1 var(--display); letter-spacing: -.05em; color: var(--navy); }
+    .number:nth-child(2) strong, .number:nth-child(4) strong { color: var(--green); }
+    .number span { display: block; color: var(--muted); font: 11px var(--mono); text-transform: uppercase; letter-spacing: .07em; margin-top: 8px; }
+    @media (max-width: 700px) { .numbers { grid-template-columns: repeat(2,1fr); } .number:nth-child(2) { border-right: 0; } .number:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
+
+    section { padding: 92px 0; }
+    section.tint { background: white; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .label { color: var(--blue); font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    h2 { max-width: 710px; font: 700 clamp(31px,4.2vw,52px)/1.1 var(--display); letter-spacing: -.04em; margin: 13px 0 18px; }
+    .intro { max-width: 700px; color: var(--muted); font-size: 18px; margin: 0; }
+
+    .split { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(34px, 6vw, 82px); align-items: center; }
+    .signal-card { padding: 27px; border-radius: 18px; color: white; background: linear-gradient(145deg, #092755, #0c4a70); box-shadow: var(--shadow); }
+    .signal-card h3 { margin: 3px 0 11px; font: 600 26px/1.15 var(--display); letter-spacing: -.035em; }
+    .signal-card p { color: #c5e1f6; margin: 0; }
+    .signal-line { height: 2px; margin: 25px 0; position: relative; background: linear-gradient(90deg, var(--sky), var(--mint)); }
+    .signal-line::before, .signal-line::after { content: ""; position: absolute; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 6px rgba(80,227,178,.15); }
+    .signal-line::before { left: 22%; } .signal-line::after { right: 8%; }
+    .signal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .signal-tags span { border: 1px solid rgba(255,255,255,.24); border-radius: 99px; padding: 4px 9px; font: 11px var(--mono); color: #d7edf9; }
+    .plain-copy p { margin: 0 0 17px; color: var(--muted); }
+    .plain-copy strong { color: var(--ink); }
+    @media (max-width: 780px) { .split { grid-template-columns: 1fr; } }
+
+    .flow { margin-top: 43px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch; }
+    .flow-step { position: relative; padding: 22px 18px; min-height: 155px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+    .flow-step:not(:last-child)::after { content: "→"; position: absolute; right: -16px; top: 50%; z-index: 2; transform: translateY(-50%); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--blue); background: var(--paper); font: 22px var(--display); }
+    .flow-icon { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 10px; background: var(--soft-blue); color: var(--blue); font: 15px var(--mono); }
+    .flow-step:nth-child(3) .flow-icon, .flow-step:nth-child(5) .flow-icon { background: var(--soft-mint); color: var(--green); }
+    .flow-step b { display: block; margin: 17px 0 6px; font-size: 15px; }
+    .flow-step span { display: block; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .flow-note { color: var(--muted); max-width: 760px; margin: 20px 0 0; font-size: 14px; }
+    @media (max-width: 780px) { .flow { grid-template-columns: 1fr; gap: 16px; } .flow-step { min-height: 0; } .flow-step:not(:last-child)::after { right: auto; left: 24px; top: auto; bottom: -23px; transform: rotate(90deg); } }
+
+    .work-grid { margin-top: 40px; display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+    .work { padding: 27px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+    .work:nth-child(2), .work:nth-child(3) { background: linear-gradient(145deg, #f2faff, white); }
+    .work .work-no { color: var(--green); font: 500 11px var(--mono); letter-spacing: .08em; }
+    .work h3 { margin: 10px 0 9px; font: 600 24px/1.15 var(--display); letter-spacing: -.035em; }
+    .work p { margin: 0; color: var(--muted); font-size: 15px; }
+    @media (max-width: 680px) { .work-grid { grid-template-columns: 1fr; } }
+
+    .timeline { margin-top: 44px; padding-left: 22px; border-left: 2px solid #b9dffb; }
+    .moment { position: relative; padding: 0 0 33px 29px; }
+    .moment::before { content: ""; position: absolute; left: -30px; top: 5px; width: 14px; height: 14px; border-radius: 50%; background: var(--blue); border: 4px solid var(--paper); }
+    .moment:nth-child(2)::before, .moment:nth-child(4)::before { background: var(--green); }
+    .moment:last-child { padding-bottom: 0; }
+    .moment time { color: var(--blue); font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: .09em; }
+    .moment h3 { margin: 6px 0; font: 600 21px var(--display); letter-spacing: -.025em; }
+    .moment p { margin: 0; color: var(--muted); max-width: 720px; }
+
+    .records { margin-top: 40px; display: grid; gap: 12px; }
+    details { border: 1px solid var(--line); border-radius: 13px; background: white; overflow: hidden; }
+    summary { cursor: pointer; list-style: none; padding: 19px 22px; display: flex; gap: 12px; align-items: center; font-weight: 800; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; margin-left: auto; font: 26px/1 var(--display); color: var(--green); }
+    details[open] summary { border-bottom: 1px solid var(--line); background: #fbfdff; }
+    details[open] summary::after { content: "−"; }
+    .count { color: var(--blue); font: 11px var(--mono); border: 1px solid #b9dffb; border-radius: 99px; padding: 3px 8px; }
+    .pr-list { list-style: none; margin: 0; padding: 11px 22px 20px; columns: 2; column-gap: 38px; }
+    .pr-list li { break-inside: avoid; padding: 8px 0; font-size: 14px; }
+    .pr-list a { color: var(--muted); }
+    .pr-list a:hover { color: var(--blue); }
+    .pr-list b { color: var(--ink); font-family: var(--mono); font-size: 12px; }
+    @media (max-width: 620px) { .pr-list { columns: 1; } }
+
+    .state-grid { margin-top: 37px; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .state { padding: 24px; border-radius: 14px; background: var(--soft-blue); }
+    .state:nth-child(2) { background: var(--soft-mint); }
+    .state:nth-child(3) { background: #ecf3ff; }
+    .state h3 { margin: 0 0 9px; font: 600 19px var(--display); letter-spacing: -.025em; }
+    .state p { margin: 0; color: var(--muted); font-size: 14px; }
+    @media (max-width: 680px) { .state-grid { grid-template-columns: 1fr; } }
+
+    .closing { padding: 75px 0; color: white; text-align: center; background: linear-gradient(120deg, #061a3a, #075f68); }
+    .closing h2 { margin-inline: auto; }
+    .closing p { max-width: 700px; color: #d2ecf3; margin: 0 auto 28px; }
+    .buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+    .button { text-decoration: none; border-radius: 999px; padding: 12px 18px; background: var(--mint); color: #063348; font-size: 14px; font-weight: 800; }
+    .button.alt { border: 1px solid rgba(255,255,255,.34); background: transparent; color: white; }
+    footer { color: var(--muted); padding: 24px 0 35px; font: 12px var(--mono); text-align: center; background: var(--paper); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">Sumaiya Islam <span>/ GSoC 2026</span></a>
+      <nav aria-label="Page navigation">
+        <a href="#work">The work</a>
+        <a href="#record">PR record</a>
+        <a href="#state">Current state</a>
+        <a href="https://gist.github.com/SuMayaBee/b24d187361c1046caf9ac8072f8a5a15">Full report ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Google Summer of Code 2026 · NumFOCUS (HoloViz)</p>
+        <h1>Giving visual AI workflows a <em>way to look back.</em></h1>
+        <p class="hero-copy">My work on Panel Live Server made it easier for AI assistants to create, inspect, refine, and deliver Python visualizations and live Panel applications through MCP.</p>
+        <div class="hero-meta">
+          <span><b>Contributor</b> · Sumaiya Islam</span>
+          <span><b>Project</b> · Panel Live Server</span>
+          <span><b>Period</b> · May–August 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <section class="numbers" aria-label="Project highlights">
+        <div class="number"><strong>32</strong><span>Merged GSoC contributions</span></div>
+        <div class="number"><strong>31</strong><span>In Panel Live Server</span></div>
+        <div class="number"><strong>14</strong><span>Supported MCP clients</span></div>
+        <div class="number"><strong>390</strong><span>Tests passing on main</span></div>
+      </section>
+    </div>
+
+    <section>
+      <div class="wrap split">
+        <div class="signal-card">
+          <p class="label" style="color:#50e3b2">The project in one line</p>
+          <h3>From “run this code” to “check the result first.”</h3>
+          <p>Panel Live Server now lets an assistant render a private draft, inspect a screenshot, refine it when needed, and show the validated result only when it is ready.</p>
+          <div class="signal-line"></div>
+          <div class="signal-tags"><span>MCP</span><span>Panel</span><span>Playwright</span><span>Python</span></div>
+        </div>
+        <div class="plain-copy">
+          <p class="label">What I set out to improve</p>
+          <h2>Useful in real clients, not only on the happy path.</h2>
+          <p>I worked across the MCP server, screenshot pipeline, rendered-result interface, command-line setup, tests, documentation, and project communication.</p>
+          <p><strong>The goal was practical:</strong> reduce friction for people using many different MCP clients, make rendering reliable across Python environments, and make the assistant’s output easier to inspect before a user sees it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tint" id="work">
+      <div class="wrap">
+        <p class="label">A visual feedback loop</p>
+        <h2>The screenshot feature is not just an export button.</h2>
+        <p class="intro">This is the central workflow I introduced. It gives the assistant a practical way to spot layout problems such as clipped labels, crowded dashboards, unsuitable chart types, or missing titles before publishing a result.</p>
+        <div class="flow" aria-label="Draft screenshot workflow">
+          <div class="flow-step"><div class="flow-icon">01</div><b>Write Python</b><span>The assistant creates visualization or Panel app code.</span></div>
+          <div class="flow-step"><div class="flow-icon">02</div><b>Render a draft</b><span>The screenshot tool stores the result privately.</span></div>
+          <div class="flow-step"><div class="flow-icon">03</div><b>Inspect visually</b><span>A screenshot goes back to the assistant for review.</span></div>
+          <div class="flow-step"><div class="flow-icon">04</div><b>Refine if needed</b><span>It can adjust code and repeat the review loop.</span></div>
+          <div class="flow-step"><div class="flow-icon">05</div><b>Show once</b><span>The approved draft is promoted without double publishing.</span></div>
+        </div>
+        <p class="flow-note">Implemented through <a href="https://github.com/panel-extensions/panel-live-server/pull/51">PR #51</a>, building on the screenshot tool in <a href="https://github.com/panel-extensions/panel-live-server/pull/17">PR #17</a> and clearer rendering modes in <a href="https://github.com/panel-extensions/panel-live-server/pull/12">PR #12</a>.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <p class="label">Four connected streams of work</p>
+        <h2>Features are only useful when the whole path holds together.</h2>
+        <div class="work-grid">
+          <article class="work"><span class="work-no">01 / VISUAL FEEDBACK</span><h3>Draft screenshots for real Panel apps</h3><p>I added private draft rendering, full-page and multi-page dashboard screenshots, plus the browser setup needed for screenshots to work outside development environments.</p></article>
+          <article class="work"><span class="work-no">02 / RELIABILITY</span><h3>Safer work across environments</h3><p>I fixed cross-environment server conflicts, isolated Bokeh validation work from live sessions, and restored package checks required in the display and screenshot paths.</p></article>
+          <article class="work"><span class="work-no">03 / PRACTICAL MCP USE</span><h3>Measured cost, then changed course</h3><p>I added token-cost reporting and used it to replace expensive inline embeds with an explicit browser action for clients where embedded HTML was not sustainable.</p></article>
+          <article class="work"><span class="work-no">04 / SETUP &amp; GUIDANCE</span><h3>Less manual configuration</h3><p>I added configurable prompts, improved user-facing result controls, wrote documentation, and expanded <code>pls install</code> from four to fourteen MCP clients.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="tint">
+      <div class="wrap split">
+        <div>
+          <p class="label">How the work grew</p>
+          <h2>A project shaped by testing real behaviour.</h2>
+          <p class="intro">Several of the most useful changes came from reproducing what happens in actual clients and environments, then improving the implementation rather than accepting the first workaround.</p>
+        </div>
+        <div class="timeline">
+          <article class="moment"><time>May–June</time><h3>Rendering and documentation foundations</h3><p>Clearer rendering modes, client guidance, server configuration documentation, and the first result-interface improvements.</p></article>
+          <article class="moment"><time>July</time><h3>Inspection, reliability, and useful controls</h3><p>Screenshot support, environment-specific ports, validation isolation, draggable result views, code display, and token-cost measurement.</p></article>
+          <article class="moment"><time>August</time><h3>A private review loop and broader setup</h3><p>Draft screenshots, full-page capture, configurable prompts, installation commands, and support for ten more MCP clients.</p></article>
+          <article class="moment"><time>Upstream</time><h3>Everything is now merged</h3><p>All 31 Panel Live Server PRs and my HoloViz blog contribution are merged upstream.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="record">
+      <div class="wrap">
+        <p class="label">Upstream contribution record</p>
+        <h2>Every merged contribution, kept close at hand.</h2>
+        <p class="intro">The complete record is expandable so the story stays readable while the evidence remains easy to reach.</p>
+        <div class="records">
+          <details><summary>Rendering, visual feedback, and interface <span class="count">14 PRs</span></summary><ul class="pr-list">
+            <li><a href="https://github.com/panel-extensions/panel-live-server/pull/12"><b>PR #12</b> Rename rendering method values</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/13"><b>PR #13</b> Inline rendering for Claude Desktop</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/17"><b>PR #17</b> Add screenshot MCP tool</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/20"><b>PR #20</b> Add <code>pls install-browser</code></a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/21"><b>PR #21</b> Improve iframe height and zoom</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/24"><b>PR #24</b> Merge validation into <code>show()</code></a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/35"><b>PR #35</b> Add collapsible tracebacks</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/36"><b>PR #36</b> Add View Code</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/39"><b>PR #39</b> Add iframe resizing</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/40"><b>PR #40</b> Add syntax highlighting</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/46"><b>PR #46</b> Show token cost</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/47"><b>PR #47</b> Remove costly inline embeds</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/51"><b>PR #51</b> Screenshot draft code directly</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/61"><b>PR #61</b> Capture full and multi-page screenshots</a></li>
+          </ul></details>
+          <details><summary>Reliability, performance, and code quality <span class="count">7 PRs</span></summary><ul class="pr-list">
+            <li><a href="https://github.com/panel-extensions/panel-live-server/pull/15"><b>PR #15</b> Skip redundant validation</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/42"><b>PR #42</b> Use environment-specific ports</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/49"><b>PR #49</b> Isolate validation documents</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/55"><b>PR #55</b> Hoist inexpensive lazy imports</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/59"><b>PR #59</b> Allow <code>importlib</code></a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/69"><b>PR #69</b> Enforce intentional lazy imports</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/72"><b>PR #72</b> Allow grouped imports for clearer code</a></li>
+          </ul></details>
+          <details><summary>Documentation, customization, and installation <span class="count">10 PRs</span></summary><ul class="pr-list">
+            <li><a href="https://github.com/panel-extensions/panel-live-server/pull/14"><b>PR #14</b> Multi-client setup documentation</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/16"><b>PR #16</b> Enhance documentation</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/19"><b>PR #19</b> Rewrite and repair documentation</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/32"><b>PR #32</b> Remove <code>list_packages</code> and prefer HoloViz</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/52"><b>PR #52</b> Add configurable MCP prompts</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/54"><b>PR #54</b> Make all prompt sections configurable</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/65"><b>PR #65</b> Split server configuration documentation</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/66"><b>PR #66</b> Simplify HoloViz workflow instructions</a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/67"><b>PR #67</b> Add initial <code>pls install</code></a></li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/71"><b>PR #71</b> Support ten more MCP clients</a></li>
+          </ul></details>
+          <details><summary>Project communication <span class="count">1 PR</span></summary><ul class="pr-list"><li><a href="https://github.com/holoviz-dev/blog/pull/101"><b>HoloViz blog PR #101</b> Panel Live Server project post</a></li></ul></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="tint" id="state">
+      <div class="wrap">
+        <p class="label">Current state</p>
+        <h2>The work is upstream. The project can keep moving.</h2>
+        <div class="state-grid">
+          <article class="state"><h3>Available now</h3><p>All GSoC pull requests are merged into the upstream Panel Live Server repository.</p></article>
+          <article class="state"><h3>Verified</h3><p>On 23 August 2026, upstream main passed 390 tests with 31 skipped, and the lint suite passed.</p></article>
+          <article class="state"><h3>What remains</h3><p>The client-installation paths and documentation will benefit from occasional polishing as MCP clients continue to change.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="wrap">
+        <p class="label" style="color:#50e3b2">Thank you</p>
+        <h2>Built with Panel Live Server, the HoloViz community, and a lot of careful testing.</h2>
+        <p>I am grateful for the chance to contribute through Google Summer of Code 2026. This page is a guide to the work. The links below lead to the full report, upstream code, and project blog post.</p>
+        <div class="buttons">
+          <a class="button" href="https://gist.github.com/SuMayaBee/b24d187361c1046caf9ac8072f8a5a15">Read the full report</a>
+          <a class="button alt" href="https://github.com/panel-extensions/panel-live-server">Explore Panel Live Server</a>
+          <a class="button alt" href="https://blog.holoviz.org/posts/panel_live_server/">Read the project blog</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>Google Summer of Code 2026 · Sumaiya Islam · NumFOCUS (HoloViz)</footer>
+</body>
+</html>
