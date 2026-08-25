@@ -11,22 +11,27 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --navy: #071b3d;
-      --blue: #1262c8;
+      --navy: #d8e8ff;
+      --blue: #63adff;
       --sky: #6ab8ff;
       --mint: #50e3b2;
-      --green: #0d9a73;
-      --ink: #10223f;
-      --muted: #5d6e87;
-      --paper: #f5f9ff;
-      --white: #ffffff;
-      --line: #d5e2f1;
-      --soft-blue: #e8f3ff;
-      --soft-mint: #e3fbf2;
-      --shadow: 0 20px 55px rgba(11, 55, 111, .12);
+      --green: #50e3b2;
+      --ink: #e7f0ff;
+      --muted: #a9bdd8;
+      --paper: #061426;
+      --white: #0a1d34;
+      --line: #1c3d60;
+      --soft-blue: #0d2949;
+      --soft-mint: #0a322e;
+      --shadow: 0 20px 55px rgba(0, 0, 0, .32);
       --mono: "DM Mono", ui-monospace, monospace;
       --body: "Manrope", sans-serif;
       --display: "Space Grotesk", sans-serif;
+    }
+    :root[data-theme="light"] {
+      --navy: #071b3d; --blue: #1262c8; --green: #0d9a73; --ink: #10223f; --muted: #5d6e87;
+      --paper: #f5f9ff; --white: #ffffff; --line: #d5e2f1; --soft-blue: #e8f3ff; --soft-mint: #e3fbf2;
+      --shadow: 0 20px 55px rgba(11, 55, 111, .12);
     }
 
     * { box-sizing: border-box; }
@@ -36,14 +41,15 @@
     a:hover { color: var(--blue); }
     .wrap { width: min(1120px, calc(100% - 40px)); margin: auto; }
 
-    .topbar { position: sticky; top: 0; z-index: 10; background: rgba(245,249,255,.88); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(213,226,241,.8); }
+    .topbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
     .topbar .wrap { min-height: 62px; display: flex; align-items: center; gap: 22px; }
     .brand { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
     .brand span { color: var(--green); }
     nav { margin-left: auto; display: flex; align-items: center; gap: 20px; }
     nav a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 700; }
-    nav a:last-child { color: var(--navy); border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; }
-    @media (max-width: 650px) { nav a:not(:last-child) { display: none; } }
+    nav a:last-of-type { color: var(--navy); border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; }
+    .theme-toggle { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; color: var(--mint); background: var(--white); cursor: pointer; font-size: 15px; }
+    @media (max-width: 650px) { nav a:not(:last-of-type) { display: none; } }
 
     .hero { overflow: hidden; position: relative; color: white; background: radial-gradient(circle at 77% 20%, rgba(80,227,178,.27), transparent 19%), radial-gradient(circle at 12% 100%, rgba(18,98,200,.55), transparent 37%), linear-gradient(130deg, #06162f, #082c5e 54%, #0b3f63); padding: 72px 0 58px; }
     .hero::after { content: ""; position: absolute; inset: 0; opacity: .14; background-image: linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, black, transparent); }
@@ -55,7 +61,7 @@
     .hero-meta { display: flex; flex-wrap: wrap; gap: 10px 24px; font: 13px var(--mono); color: #b8d0ee; }
     .hero-meta b { color: white; font-weight: 500; }
 
-    .numbers { margin-top: -29px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: white; box-shadow: var(--shadow); }
+    .numbers { margin-top: -29px; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--white); box-shadow: var(--shadow); }
     .number { padding: 22px 24px; border-right: 1px solid var(--line); }
     .number:last-child { border-right: 0; }
     .number strong { display: block; font: 700 clamp(30px,4vw,48px)/1 var(--display); letter-spacing: -.05em; color: var(--navy); }
@@ -64,7 +70,7 @@
     @media (max-width: 700px) { .numbers { grid-template-columns: repeat(2,1fr); } .number:nth-child(2) { border-right: 0; } .number:nth-child(-n+2) { border-bottom: 1px solid var(--line); } }
 
     section { padding: 92px 0; }
-    section.tint { background: white; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    section.tint { background: var(--white); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
     .label { color: var(--blue); font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
     h2 { max-width: 710px; font: 700 clamp(31px,4.2vw,52px)/1.1 var(--display); letter-spacing: -.04em; margin: 13px 0 18px; }
     .intro { max-width: 700px; color: var(--muted); font-size: 18px; margin: 0; }
@@ -83,7 +89,7 @@
     @media (max-width: 780px) { .split { grid-template-columns: 1fr; } }
 
     .flow { margin-top: 43px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch; }
-    .flow-step { position: relative; padding: 22px 18px; min-height: 155px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+    .flow-step { position: relative; padding: 22px 18px; min-height: 155px; border: 1px solid var(--line); border-radius: 15px; background: var(--white); }
     .flow-step:not(:last-child)::after { content: "→"; position: absolute; right: -16px; top: 50%; z-index: 2; transform: translateY(-50%); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--blue); background: var(--paper); font: 22px var(--display); }
     .flow-icon { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 10px; background: var(--soft-blue); color: var(--blue); font: 15px var(--mono); }
     .flow-step:nth-child(3) .flow-icon, .flow-step:nth-child(5) .flow-icon { background: var(--soft-mint); color: var(--green); }
@@ -93,8 +99,8 @@
     @media (max-width: 780px) { .flow { grid-template-columns: 1fr; gap: 16px; } .flow-step { min-height: 0; } .flow-step:not(:last-child)::after { right: auto; left: 24px; top: auto; bottom: -23px; transform: rotate(90deg); } }
 
     .work-grid { margin-top: 40px; display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
-    .work { padding: 27px; border: 1px solid var(--line); border-radius: 15px; background: white; }
-    .work:nth-child(2), .work:nth-child(3) { background: linear-gradient(145deg, #f2faff, white); }
+    .work { padding: 27px; border: 1px solid var(--line); border-radius: 15px; background: var(--white); }
+    .work:nth-child(2), .work:nth-child(3) { background: linear-gradient(145deg, var(--soft-blue), var(--white)); }
     .work .work-no { color: var(--green); font: 500 11px var(--mono); letter-spacing: .08em; }
     .work h3 { margin: 10px 0 9px; font: 600 24px/1.15 var(--display); letter-spacing: -.035em; }
     .work p { margin: 0; color: var(--muted); font-size: 15px; }
@@ -110,11 +116,11 @@
     .moment p { margin: 0; color: var(--muted); max-width: 720px; }
 
     .records { margin-top: 40px; display: grid; gap: 12px; }
-    details { border: 1px solid var(--line); border-radius: 13px; background: white; overflow: hidden; }
+    details { border: 1px solid var(--line); border-radius: 13px; background: var(--white); overflow: hidden; }
     summary { cursor: pointer; list-style: none; padding: 19px 22px; display: flex; gap: 12px; align-items: center; font-weight: 800; }
     summary::-webkit-details-marker { display: none; }
     summary::after { content: "+"; margin-left: auto; font: 26px/1 var(--display); color: var(--green); }
-    details[open] summary { border-bottom: 1px solid var(--line); background: #fbfdff; }
+    details[open] summary { border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--white) 70%, var(--soft-blue)); }
     details[open] summary::after { content: "−"; }
     .count { color: var(--blue); font: 11px var(--mono); border: 1px solid #b9dffb; border-radius: 99px; padding: 3px 8px; }
     .pr-list { list-style: none; margin: 0; padding: 11px 22px 20px; columns: 2; column-gap: 38px; }
@@ -127,7 +133,7 @@
     .state-grid { margin-top: 37px; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
     .state { padding: 24px; border-radius: 14px; background: var(--soft-blue); }
     .state:nth-child(2) { background: var(--soft-mint); }
-    .state:nth-child(3) { background: #ecf3ff; }
+    .state:nth-child(3) { background: color-mix(in srgb, var(--soft-blue) 70%, var(--white)); }
     .state h3 { margin: 0 0 9px; font: 600 19px var(--display); letter-spacing: -.025em; }
     .state p { margin: 0; color: var(--muted); font-size: 14px; }
     @media (max-width: 680px) { .state-grid { grid-template-columns: 1fr; } }
@@ -139,6 +145,26 @@
     .button { text-decoration: none; border-radius: 999px; padding: 12px 18px; background: var(--mint); color: #063348; font-size: 14px; font-weight: 800; }
     .button.alt { border: 1px solid rgba(255,255,255,.34); background: transparent; color: white; }
     footer { color: var(--muted); padding: 24px 0 35px; font: 12px var(--mono); text-align: center; background: var(--paper); }
+    .video-card { margin-top: 34px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); box-shadow: var(--shadow); }
+    .video-card video { display: block; width: 100%; max-height: 650px; border-radius: 10px; background: #000; }
+    .video-card p { margin: 12px 8px 2px; color: var(--muted); font-size: 14px; }
+    .report { border-top: 1px solid var(--line); }
+    .report .report-lede { max-width: 780px; color: var(--muted); font-size: 18px; }
+    .report-grid { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 56px; margin-top: 54px; }
+    .report-index { position: sticky; top: 88px; align-self: start; font: 11px/1.7 var(--mono); }
+    .report-index a { display: block; color: var(--muted); text-decoration: none; padding: 5px 0; }
+    .report-index a:hover { color: var(--mint); }
+    .report-body { max-width: 780px; }
+    .report-body article { padding: 0 0 42px; margin: 0 0 42px; border-bottom: 1px solid var(--line); scroll-margin-top: 85px; }
+    .report-body article:last-child { border-bottom: 0; }
+    .report-body h3 { font: 600 clamp(23px, 2.6vw, 32px)/1.16 var(--display); letter-spacing: -.035em; margin: 0 0 18px; }
+    .report-body p { color: var(--muted); margin: 0 0 17px; }
+    .report-body strong { color: var(--ink); }
+    .report-body ul { color: var(--muted); padding-left: 20px; margin: 0; }
+    .report-body li { margin: 9px 0; }
+    .report-body code { color: var(--mint); background: var(--soft-blue); border-radius: 5px; padding: 1px 5px; font: 12px var(--mono); }
+    .report-body .section-number { color: var(--mint); font: 11px var(--mono); letter-spacing: .12em; display: block; margin-bottom: 10px; }
+    @media (max-width: 850px) { .report-grid { grid-template-columns: 1fr; gap: 28px; } .report-index { position: static; display: flex; overflow-x: auto; gap: 16px; white-space: nowrap; } .report-index a { padding: 0; } }
   </style>
 </head>
 <body>
@@ -147,9 +173,11 @@
       <a class="brand" href="#top">Sumaiya Islam <span>/ GSoC 2026</span></a>
       <nav aria-label="Page navigation">
         <a href="#work">The work</a>
+        <a href="#details">Full story</a>
         <a href="#record">PR record</a>
         <a href="#state">Current state</a>
         <a href="https://gist.github.com/SuMayaBee/b24d187361c1046caf9ac8072f8a5a15">Full report ↗</a>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" title="Switch to light mode">☼</button>
       </nav>
     </div>
   </header>
@@ -208,6 +236,13 @@
           <div class="flow-step"><div class="flow-icon">05</div><b>Show once</b><span>The approved draft is promoted without double publishing.</span></div>
         </div>
         <p class="flow-note">Implemented through <a href="https://github.com/panel-extensions/panel-live-server/pull/51">PR #51</a>, building on the screenshot tool in <a href="https://github.com/panel-extensions/panel-live-server/pull/17">PR #17</a> and clearer rendering modes in <a href="https://github.com/panel-extensions/panel-live-server/pull/12">PR #12</a>.</p>
+        <div class="video-card">
+          <video controls playsinline preload="metadata">
+            <source src="https://gist.github.com/user-attachments/assets/6a843fe1-1b55-4e70-8428-3f07030220c7" type="video/mp4">
+            Your browser does not support this video.
+          </video>
+          <p>A short recording of the project in action.</p>
+        </div>
       </div>
     </section>
 
@@ -240,6 +275,105 @@
       </div>
     </section>
 
+    <section class="report" id="details">
+      <div class="wrap">
+        <p class="label">The full story</p>
+        <h2>Technical innovations and major contributions</h2>
+        <p class="report-lede">This section contains the complete technical account from my final report. The site is designed to be easy to scan, but nothing important is hidden behind a summary.</p>
+        <div class="report-grid">
+          <aside class="report-index" aria-label="Technical report sections">
+            <a href="#visual-feedback">2.1 Visual feedback</a>
+            <a href="#panel-apps">2.2 Panel applications</a>
+            <a href="#context-cost">2.3 Context cost</a>
+            <a href="#correction-loop">2.4 Correction loop</a>
+            <a href="#reliability">2.5 Reliability</a>
+            <a href="#interface">2.6 Interface</a>
+            <a href="#prompts">2.7 Prompts</a>
+            <a href="#installation">2.8 Installation</a>
+            <a href="#quality">2.9 Quality</a>
+            <a href="#documentation">2.10 Documentation</a>
+          </aside>
+          <div class="report-body">
+            <article id="visual-feedback">
+              <span class="section-number">2.1 / VISUAL FEEDBACK</span>
+              <h3>Visual feedback became part of the AI workflow</h3>
+              <p>The most important change in my work was treating a screenshot as feedback for the assistant, rather than as a static export for the user. Before this work, an assistant could create a visualization with <code>show()</code>, but it could not see the final rendering. When it needed to check its own result, it had to show an unfinished chart or dashboard to the user, screenshot it, revise it, and then show a second version.</p>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/51">PR #51</a>, I changed that workflow. The <code>screenshot</code> tool can accept Python code directly, along with a name and rendering method. The server stores the result as a temporary draft, renders it, and returns the image to the assistant. The draft is not put into the normal visualization feed. Once the assistant is satisfied, it can promote the same validated draft through <code>show(draft_id=...)</code> instead of recreating it.</p>
+              <p>This is more than a convenience feature. It gives the assistant a practical visual review loop. It can notice clipped labels, unsuitable chart types, unreadable legends, missing titles, crowded layouts, or a dashboard that does not fit in the initial viewport before the user sees it.</p>
+              <p>Earlier in the project, <a href="https://github.com/panel-extensions/panel-live-server/pull/12">PR #12</a> made the two rendering choices clearer by renaming <code>jupyter</code> and <code>panel</code> to <code>inline</code> and <code>server</code>. <code>inline</code> represents a simple rendered result, while <code>server</code> represents a live Panel application. This distinction matters in the screenshot path because server applications may require a running local view before they can be inspected.</p>
+              <ul><li><a href="https://github.com/panel-extensions/panel-live-server/pull/20">PR #20</a> made browser installation a supported CLI operation, so screenshots work for installed PyPI, uv, pip, and Pixi users, not only development environments.</li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/51">PR #51</a> added private draft rendering and draft promotion to prevent double publishing.</li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/61">PR #61</a> made screenshots capture full scrollable content and multiple dashboard pages, reporting when content remains outside the capture instead of silently pretending it saw the whole application.</li></ul>
+            </article>
+
+            <article id="panel-apps">
+              <span class="section-number">2.2 / PANEL APPLICATIONS</span>
+              <h3>I designed the screenshot system around real Panel applications</h3>
+              <p>Panel Live Server supports both simple inline results and running Panel server applications. The screenshot feature therefore has to handle more than one static chart. It starts a local Panel view when necessary, uses Playwright Chromium to capture the rendered browser output, and returns either one image or a labelled set of images.</p>
+              <p>For <a href="https://github.com/panel-extensions/panel-live-server/pull/61">PR #61</a>, I added behaviour for dashboards that are taller than a browser window and dashboards with more than one page. This matters for practical data applications, where the first viewport may show only a title, a filter, or the first tab. The implementation supports Panel Tabs and common user-built page switchers, with targeted unit tests and browser UI tests.</p>
+            </article>
+
+            <article id="context-cost">
+              <span class="section-number">2.3 / MEASUREMENT</span>
+              <h3>I measured model-context cost and changed the design when the measurement disagreed with the first solution</h3>
+              <p>Claude Desktop could not display a localhost iframe because of its content security policy. In <a href="https://github.com/panel-extensions/panel-live-server/pull/13">PR #13</a>, I implemented an inline HTML fallback using <code>iframe.srcdoc</code>. This allowed charts to appear inside Claude Desktop and gave interactive applications a browser-link fallback.</p>
+              <p>Later, I added payload token reporting in <a href="https://github.com/panel-extensions/panel-live-server/pull/46">PR #46</a>. The result showed that sending a complete rendered HTML page to the model was expensive and generally not useful to the model. For a simple chart, the embedded page could use around <strong>14,000 tokens</strong>, compared with around <strong>275 tokens</strong> for a normal result.</p>
+              <p>I used that evidence to change the design in <a href="https://github.com/panel-extensions/panel-live-server/pull/47">PR #47</a>. Claude Desktop and Cowork now use an explicit <strong>Open in browser</strong> action. This gives up an in-chat preview for those clients in exchange for a much smaller and more sustainable context footprint. Cursor and VS Code remain unchanged. I learned to solve a compatibility problem, instrument the result, measure real cost, and revise the solution when necessary.</p>
+            </article>
+
+            <article id="correction-loop">
+              <span class="section-number">2.4 / CORRECTION LOOP</span>
+              <h3>I changed failures into a correction loop instead of a dead end</h3>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/24">PR #24</a>, I merged the old two-step <code>validate()</code> then <code>show()</code> interaction into <code>show()</code>. The server now validates automatically before rendering. If validation or rendering fails, the tool returns a concise retry payload that explains the relevant problem and the result interface enters a “Refining visualization…” state.</p>
+              <p>The server does not independently rewrite a user's code. Instead, it turns a failure into structured feedback that the calling assistant can act on. Combined with the screenshot draft loop, this gives an MCP client two complementary ways to improve an answer before presenting it: code and runtime feedback when execution fails, and visual feedback when execution succeeds but the result is not good enough.</p>
+              <p>I improved this debugging path further in <a href="https://github.com/panel-extensions/panel-live-server/pull/35">PR #35</a>. The interface presents a short error summary first and keeps the full traceback in a collapsed disclosure. The traceback is inserted through <code>textContent</code>, which prevents code or error text from being treated as HTML.</p>
+            </article>
+
+            <article id="reliability">
+              <span class="section-number">2.5 / RELIABILITY</span>
+              <h3>I made cross-environment execution reliable</h3>
+              <p>Panel Live Server launches a local Panel server and executes user-provided visualization code in that environment. A fixed default port caused a subtle failure when users had more than one Python environment. A command from one environment could find an existing server on the shared port and reuse it even if that server belonged to another environment. The visualization then ran with the wrong installed packages.</p>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/42">PR #42</a>, I made the default Panel port deterministic per Python interpreter. The same environment can still reuse its own running server, but another environment receives a different port. <code>PANEL_LIVE_SERVER_PORT</code> remains an override for users who need a specific port. I tested this with packages installed only in separate environments, reproducing the issue in a way unit tests alone would not have shown.</p>
+              <p>I also fixed a separate concurrency issue in <a href="https://github.com/panel-extensions/panel-live-server/pull/49">PR #49</a>. Background validation runs code to detect runtime errors before display. Bokeh document state can otherwise be shared with an active browser session, so validation could occasionally write into the wrong document and fail with a pending-writes error. I gave the validation thread an isolated temporary document through Panel's per-thread state. Finally, <a href="https://github.com/panel-extensions/panel-live-server/pull/59">PR #59</a> removed <code>importlib</code> from the blocked-import list, restoring package-availability checks used during evaluation, display, and screenshots.</p>
+            </article>
+
+            <article id="interface">
+              <span class="section-number">2.6 / RESULT INTERFACE</span>
+              <h3>I improved the rendered-result interface</h3>
+              <ul><li><a href="https://github.com/panel-extensions/panel-live-server/pull/21">PR #21</a> increased the default iframe height and changed the default zoom to 75 percent.</li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/35">PR #35</a> added a concise error summary and a collapsible, safely inserted traceback.</li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/36">PR #36</a> added a View Code interface with copy and return-to-visualization controls.</li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/39">PR #39</a> added drag-to-resize support for the visualization iframe.</li><li><a href="https://github.com/panel-extensions/panel-live-server/pull/40">PR #40</a> added Python syntax highlighting to the code view.</li></ul>
+            </article>
+
+            <article id="prompts">
+              <span class="section-number">2.7 / CONFIGURABLE PROMPTS</span>
+              <h3>I made AI instructions configurable</h3>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/52">PR #52</a>, I added <code>pls mcp --prompts</code>, allowing users and teams to provide a JSON file with custom instructions. The initial version supported library-selection and output guidance, with append and replacement behaviour.</p>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/54">PR #54</a>, I expanded this to cover all instruction sections, including introductory text, workflow, file policy, rendering guidance, errors, and screenshot guidance. Default behaviour remains unchanged when no custom prompts file is supplied.</p>
+            </article>
+
+            <article id="installation">
+              <span class="section-number">2.8 / MCP INSTALLATION</span>
+              <h3>I improved MCP installation and client support</h3>
+              <p>I made setup easier for users who do not want to manually edit MCP configuration files. In <a href="https://github.com/panel-extensions/panel-live-server/pull/67">PR #67</a>, I added <code>pls install &lt;client&gt;</code> for Claude Desktop, Cursor, VS Code, and Claude Code. The command finds the active <code>pls</code> executable and writes the appropriate MCP configuration while preserving existing settings.</p>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/71">PR #71</a>, I expanded this from four to fourteen supported clients. It adds Windsurf, Cline, Junie, Gemini CLI, Google Antigravity, Kiro, GitHub Copilot CLI, Kilo Code, OpenAI Codex CLI, and Mistral Vibe. It also fixes config-path issues found while testing the clients and preserves user-managed configuration fields rather than replacing them.</p>
+              <p>MCP clients use different locations, configuration schemas, and file formats. Some use JSON with an <code>mcpServers</code> mapping, Kilo Code uses JSONC and a command array, and Codex and Mistral Vibe use TOML in different shapes. The implementation handles these formats separately where necessary, keeps other configured servers intact, preserves user-owned fields such as custom environment variables or timeouts, and is idempotent when the command is run twice.</p>
+            </article>
+
+            <article id="quality">
+              <span class="section-number">2.9 / PERFORMANCE &amp; QUALITY</span>
+              <h3>I improved performance and code-quality enforcement</h3>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/15">PR #15</a>, I removed redundant validation from the MCP display path. In <a href="https://github.com/panel-extensions/panel-live-server/pull/55">PR #55</a>, I measured lazy imports across the source and test suite. Imports with no meaningful startup cost were moved to module level, while expensive imports such as Panel, Bokeh, Pandas, Playwright, and server modules remained lazy.</p>
+              <p>In <a href="https://github.com/panel-extensions/panel-live-server/pull/69">PR #69</a>, I enabled Ruff's <code>PLC0415</code> rule so non-top-level imports are visible during linting rather than only during review. Deliberately lazy imports are documented with a targeted <code>noqa</code> and a reason. In <a href="https://github.com/panel-extensions/panel-live-server/pull/72">PR #72</a>, I followed up on review feedback by allowing grouped imports where they improve readability, removing a temporary lint exception, and applying the resulting formatting consistently across the codebase.</p>
+            </article>
+
+            <article id="documentation">
+              <span class="section-number">2.10 / DOCUMENTATION &amp; COMMUNITY</span>
+              <h3>I improved documentation and contributor guidance</h3>
+              <p>Documentation was a continuous part of my work. I wrote and revised setup, installation, architecture, MCP, and contributor documentation in <a href="https://github.com/panel-extensions/panel-live-server/pull/14">PR #14</a>, <a href="https://github.com/panel-extensions/panel-live-server/pull/16">PR #16</a>, <a href="https://github.com/panel-extensions/panel-live-server/pull/19">PR #19</a>, <a href="https://github.com/panel-extensions/panel-live-server/pull/32">PR #32</a>, <a href="https://github.com/panel-extensions/panel-live-server/pull/65">PR #65</a>, and <a href="https://github.com/panel-extensions/panel-live-server/pull/66">PR #66</a>. This work covers setup for multiple clients, MCP tools, cross-platform guidance, server configuration, deployment, custom AI instructions, troubleshooting, and HoloViz development skills.</p>
+              <p>I also wrote the public <a href="https://blog.holoviz.org/posts/panel_live_server/">Panel Live Server blog post</a> for the HoloViz blog. The accompanying <a href="https://github.com/holoviz-dev/blog/pull/101">HoloViz blog PR #101</a> was merged. The blog explains the project to a wider audience and complements the repository documentation.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="record">
       <div class="wrap">
         <p class="label">Upstream contribution record</p>
@@ -260,14 +394,29 @@
       </div>
     </section>
 
+    <section id="lessons">
+      <div class="wrap split">
+        <div>
+          <p class="label">Challenges and lessons learned</p>
+          <h2>Building the product also meant revising earlier answers.</h2>
+          <p class="intro">The project involved more than adding features. Several important changes came from measuring real behaviour, finding a limitation, and changing the design.</p>
+        </div>
+        <div class="plain-copy">
+          <p>The Claude Desktop iframe limitation taught me that MCP clients can have materially different rendering restrictions even when they use the same server. The inline HTML workaround solved the visual problem, but token measurements showed that it was too expensive. Removing the embed for affected clients was a better outcome for practical use.</p>
+          <p>The environment-port and Bokeh-document fixes taught me that local development assumptions do not always hold when users run multiple environments, long conversations, or background validation. These issues were not obvious from the happy path, so I focused on reproducing the actual failure mode and adding targeted tests where possible.</p>
+          <p>I also learned that installation UX is part of the product. Supporting many MCP clients is not only a matter of writing JSON. Clients use different paths, configuration schemas, environment variables, TOML or JSON formats, and behaviours for existing settings. The installation work therefore emphasizes preserving existing configuration, idempotency, and tests for each format.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="tint" id="state">
       <div class="wrap">
         <p class="label">Current state</p>
         <h2>The work is upstream. The project can keep moving.</h2>
         <div class="state-grid">
-          <article class="state"><h3>Available now</h3><p>All GSoC pull requests are merged into the upstream Panel Live Server repository.</p></article>
-          <article class="state"><h3>Verified</h3><p>On 23 August 2026, upstream main passed 390 tests with 31 skipped, and the lint suite passed.</p></article>
-          <article class="state"><h3>What remains</h3><p>The client-installation paths and documentation will benefit from occasional polishing as MCP clients continue to change.</p></article>
+          <article class="state"><h3>Available now</h3><p>All 31 GSoC pull requests are merged into the upstream Panel Live Server repository.</p></article>
+          <article class="state"><h3>Verified</h3><p>On 23 August 2026, upstream main passed 390 tests with 31 skipped, and the lint suite passed. The installation work also passed 108 focused tests before it was merged.</p></article>
+          <article class="state"><h3>What remains</h3><p>The client-installation paths may need future maintenance as MCP clients change. I also plan a final documentation-polishing pass to keep installation and screenshot guidance consistent.</p></article>
         </div>
       </div>
     </section>
@@ -286,5 +435,22 @@
     </section>
   </main>
   <footer>Google Summer of Code 2026 · Sumaiya Islam · NumFOCUS (HoloViz)</footer>
+  <script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('gsoc-theme');
+    const setTheme = (theme) => {
+      document.documentElement.dataset.theme = theme;
+      const light = theme === 'light';
+      themeToggle.textContent = light ? '☾' : '☼';
+      themeToggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+      themeToggle.title = themeToggle.getAttribute('aria-label');
+    };
+    setTheme(savedTheme || 'dark');
+    themeToggle.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('gsoc-theme', next);
+      setTheme(next);
+    });
+  </script>
 </body>
 </html>
