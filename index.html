@@ -66,38 +66,45 @@
     'Fifty-one merged contributions, across the full upstream record.';
 </script>
 <style>
-  .evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:34px}.evidence-card{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);min-width:0}.evidence-card .evidence-media{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;background:#03060b;border-bottom:1px solid var(--line)}.evidence-card .evidence-copy{padding:16px 17px 18px}.evidence-card .evidence-pr{display:block;color:var(--blue);font:11px var(--mono);text-decoration:none;margin-bottom:8px}.evidence-card h3{font:700 16px/1.35 var(--sans);letter-spacing:-.02em}.evidence-card p{margin:8px 0 0;color:var(--sub);font-size:13px;line-height:1.55}.evidence-card:hover{border-color:var(--blue)}@media(max-width:880px){.evidence-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:570px){.evidence-grid{grid-template-columns:1fr}.evidence-card .evidence-media{aspect-ratio:16/11}}
+  .stream-evidence{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:25px}.stream-media{min-width:0;border:1px solid var(--line);background:var(--surface-2)}.stream-media:hover{border-color:var(--blue)}.stream-media .media-asset{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;background:#03060b;border-bottom:1px solid var(--line)}.stream-media .media-copy{padding:12px 14px 14px}.stream-media a{display:block;color:var(--blue);font:11px var(--mono);text-decoration:none}.stream-media b{display:block;margin-top:6px;font-size:14px;line-height:1.4}.stream-media p{margin:5px 0 0;color:var(--sub);font-size:12px;line-height:1.55}@media(max-width:620px){.stream-evidence{grid-template-columns:1fr}}
 </style>
 <script>
-  const evidence = [
-    ['img','https://github.com/user-attachments/assets/f8340e27-2217-48aa-a80e-5586eed27c3c','PR #61','Screenshot actions by name','The screenshot tool activates the Sales tab before capturing the result.'],
-    ['img','https://github.com/user-attachments/assets/08841be4-b98d-48d2-8154-25fc34c33f6e','PR #61','Screenshot a selected state','The same tool can change a form value and capture the resulting dashboard.'],
-    ['video','https://github.com/user-attachments/assets/889553e6-9f79-43e9-981e-fd967a1c0377','PR #24','Refine after a failed render','A failed first attempt stays private while the assistant corrects the visualization.'],
-    ['video','https://github.com/user-attachments/assets/7dca5908-4924-4011-ae01-38ccc16da3dd','PR #39','Resize the embedded result','A drag handle lets people give an embedded visualization more room.'],
-    ['video','https://github.com/user-attachments/assets/35fafef0-5032-4ef8-8818-f6dd2b474936','PR #35','Readable failed-render details','The failure state shows a concise error and keeps the full traceback available.'],
-    ['img','https://github.com/user-attachments/assets/21902c4b-42b1-4e0a-96a7-5fbec9cef3ae','PR #40','Syntax-highlighted source','The View Code panel makes generated Python easier to inspect.'],
-    ['img','https://github.com/user-attachments/assets/e26c5a4a-56ca-4d83-ab8c-8d4f613f2d76','PR #46','Token cost in the app','Each result exposes an estimated context cost beside its status.'],
-    ['img','https://github.com/user-attachments/assets/645f226d-a338-4e6d-8c9f-d620c47df611','PR #47','Before: an expensive embedded result','The measurement that showed the cost of embedding rendered HTML for Claude Desktop and Cowork.'],
-    ['img','https://github.com/user-attachments/assets/f2bbd8df-2021-4fb9-9305-51bc134f60a4','PR #47','After: a compact browser-open result','The same workflow after removing the costly inline payload.'],
-    ['video','https://github.com/user-attachments/assets/5e2fa12b-fe51-41fd-80d0-7485e38cf196','PR #13','Claude Desktop inline display','Static visualizations appear inline, while interactive apps retain a browser fallback.'],
-    ['video','https://github.com/user-attachments/assets/9326a307-1aa1-4745-b9ee-456e58d0271d','PR #13','Cursor and VS Code display','The existing inline experience continues to work in the editor clients.'],
-    ['img','https://github.com/user-attachments/assets/fd09fe1b-37dc-4884-9ebe-51e7fa422042','PR #14','Multi-client setup guides','Tabbed setup instructions cover the main MCP clients and local development.'],
-    ['img','https://github.com/user-attachments/assets/ca56417c-c94c-4da3-a9f9-f09ad8c464fe','PR #32','Documentation revised in review','A review-driven documentation update for package installation and environment ownership.'],
-    ['img','https://github.com/user-attachments/assets/1d8048d3-25c4-416f-b34e-ad3ea6a302d3','PR #65','Focused configuration guides','The long server configuration guide split into clear, task-oriented documentation.']
-  ];
-  const prNumber = label => label.replace('PR #', '');
-  const prHref = label => `https://github.com/panel-extensions/panel-live-server/pull/${prNumber(label)}`;
-  const media = evidence.map(([kind, src, pr, title, text]) => {
-    const asset = kind === 'video'
-      ? `<video controls preload="metadata" class="evidence-media" src="${src}"></video>`
-      : `<img loading="lazy" class="evidence-media" src="${src}" alt="${title}">`;
-    return `<article class="evidence-card">${asset}<div class="evidence-copy"><a class="evidence-pr" href="${prHref(pr)}" target="_blank" rel="noreferrer">${pr} ↗</a><h3>${title}</h3><p>${text}</p></div></article>`;
+  const streamMedia = {
+    'I designed the screenshot system around real Panel applications': [
+      ['img','https://github.com/user-attachments/assets/f8340e27-2217-48aa-a80e-5586eed27c3c',61,'Capture a named tab','The assistant activates Sales before taking the screenshot.'],
+      ['img','https://github.com/user-attachments/assets/08841be4-b98d-48d2-8154-25fc34c33f6e',61,'Capture a selected state','The assistant sets a form value before capturing the dashboard.']
+    ],
+    'I measured model-context cost and changed the design': [
+      ['img','https://github.com/user-attachments/assets/e26c5a4a-56ca-4d83-ab8c-8d4f613f2d76',46,'Token cost in the app','Each rendered result reports its estimated context cost.'],
+      ['img','https://github.com/user-attachments/assets/645f226d-a338-4e6d-8c9f-d620c47df611',47,'Before: costly embedded HTML','The measurement behind the design change.'],
+      ['img','https://github.com/user-attachments/assets/f2bbd8df-2021-4fb9-9305-51bc134f60a4',47,'After: browser-open result','The same client workflow with the compact result.'],
+      ['video','https://github.com/user-attachments/assets/5e2fa12b-fe51-41fd-80d0-7485e38cf196',13,'Claude Desktop display','Static visualizations appear inline with an app fallback.'],
+      ['video','https://github.com/user-attachments/assets/9326a307-1aa1-4745-b9ee-456e58d0271d',13,'Cursor and VS Code display','The original editor-client experience remains unchanged.']
+    ],
+    'I changed failures into a correction loop instead of a dead end': [
+      ['video','https://github.com/user-attachments/assets/889553e6-9f79-43e9-981e-fd967a1c0377',24,'Refine after a failed render','A retry happens before the corrected result is displayed.'],
+      ['video','https://github.com/user-attachments/assets/35fafef0-5032-4ef8-8818-f6dd2b474936',35,'Failure details without noise','A short error and optional traceback make the failure actionable.']
+    ],
+    'I improved the rendered-result interface': [
+      ['video','https://github.com/user-attachments/assets/7dca5908-4924-4011-ae01-38ccc16da3dd',39,'Drag to resize','A handle gives an embedded visualization the room it needs.'],
+      ['img','https://github.com/user-attachments/assets/21902c4b-42b1-4e0a-96a7-5fbec9cef3ae',40,'Syntax-highlighted source','The View Code panel makes generated Python easier to inspect.']
+    ],
+    'I improved MCP installation and client support': [
+      ['img','https://github.com/user-attachments/assets/fd09fe1b-37dc-4884-9ebe-51e7fa422042',14,'Multi-client setup guides','Tabbed instructions cover the main MCP clients and local development.']
+    ],
+    'I improved documentation and contributor guidance': [
+      ['img','https://github.com/user-attachments/assets/ca56417c-c94c-4da3-a9f9-f09ad8c464fe',32,'Documentation revised in review','A review-driven update for package installation and environment ownership.'],
+      ['img','https://github.com/user-attachments/assets/1d8048d3-25c4-416f-b34e-ad3ea6a302d3',65,'Focused configuration guides','The long server configuration guide became clear task-oriented pages.']
+    ]
+  };
+  const streamCards = cards => cards.map(([kind, src, pr, title, text]) => {
+    const asset = kind === 'video' ? `<video controls preload="metadata" class="media-asset" src="${src}"></video>` : `<img loading="lazy" class="media-asset" src="${src}" alt="${title}">`;
+    return `<article class="stream-media">${asset}<div class="media-copy"><a href="https://github.com/panel-extensions/panel-live-server/pull/${pr}" target="_blank" rel="noreferrer">PR #${pr} ↗</a><b>${title}</b><p>${text}</p></div></article>`;
   }).join('');
-  const evidenceSection = document.createElement('section');
-  evidenceSection.id = 'evidence';
-  evidenceSection.className = 'tint';
-  evidenceSection.innerHTML = `<div class="wrap"><p class="label">Visual evidence from review</p><h2 class="section-title">The screenshots and recordings behind the merged work.</h2><p class="lede">These are the original demos and screenshots shared in the pull requests, including feature work and review-driven improvements. Each card links back to its implementation.</p><div class="evidence-grid">${media}</div></div>`;
-  document.querySelector('#goals').before(evidenceSection);
+  document.querySelectorAll('.stream').forEach(stream => {
+    const cards = streamMedia[stream.querySelector('h3').textContent];
+    if (cards) stream.querySelector('div:last-child').insertAdjacentHTML('beforeend', `<div class="stream-evidence">${streamCards(cards)}</div>`);
+  });
 </script>
 </body>
 </html>
